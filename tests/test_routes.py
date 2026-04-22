@@ -84,7 +84,7 @@ class TestGetMetadata:
         response = await client.get("/metadata", params={"url": "https://new-url.com"})
         assert response.status_code == 202
         data = response.json()
-        assert data["url"] == "https://new-url.com"
+        assert data["url"] == "https://new-url.com/"
         assert "scheduled" in data["message"].lower()
 
     @patch("app.routes.metadata.fetch_and_store", new_callable=AsyncMock)
@@ -92,4 +92,4 @@ class TestGetMetadata:
     async def test_cache_miss_triggers_background_task(self, mock_get, mock_fetch, client):
         mock_get.return_value = None
         await client.get("/metadata", params={"url": "https://trigger-test.com"})
-        mock_fetch.assert_called_once_with("https://trigger-test.com")
+        mock_fetch.assert_called_once_with("https://trigger-test.com/")

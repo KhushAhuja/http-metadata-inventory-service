@@ -1,11 +1,16 @@
 import httpx
 from fastapi import APIRouter, BackgroundTasks, HTTPException
 from fastapi.responses import JSONResponse
+from pydantic import HttpUrl
 
 from app.models import MetadataRequest, MetadataRecord, AcceptedResponse
 from app.services.metadata import fetch_and_store, get_stored_metadata
 
 router = APIRouter()
+
+
+def normalize_url(url: str) -> str:
+    return str(HttpUrl(url))
 
 
 @router.post("/metadata", response_model=MetadataRecord, status_code=201)
@@ -22,6 +27,7 @@ async def create_metadata(request: MetadataRequest):
 
 @router.get("/metadata", status_code=200)
 async def get_metadata(url: str, background_tasks: BackgroundTasks):
+    url = normalize_url(url)
     existing = await get_stored_metadata(url)
 
     if existing:
