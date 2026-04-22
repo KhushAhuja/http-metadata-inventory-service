@@ -6,8 +6,7 @@ class Settings(BaseSettings):
     mongo_db_name: str = "metadata_inventory"
     request_timeout: int = 30
 
-    class Config:
-        env_file = ".env"
+    model_config = {"env_file": ".env"}
 
 
 settings = Settings()
